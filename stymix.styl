@@ -1,0 +1,138 @@
+//-------------------------------------------------------------------------
+
+
+$base_path   = '../'
+$image_path = $base_path + 'img/'
+$font_path  = $base_path + 'fonts/'
+
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+
+image-url($img)
+	return url($image_path + $img)
+
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+
+vendor(prop, args, vendors)
+	for prefix in vendors
+		if official == prefix
+			{prop}: args
+		else
+			newprop = '-' + prefix + '-' + prop
+			{newprop}: args
+
+//-------------------------------------------------------------------------
+
+display()
+	display: arguments
+	if arguments == inline-block
+		zoom: 1
+		*display: inline
+
+//-------------------------------------------------------------------------
+
+border-radius()
+	vendor('border-radius', arguments, official webkit)
+
+
+//-------------------------------------------------------------------------
+
+box-shadow()
+	vendor('box-shadow', arguments, official webkit)
+
+//-------------------------------------------------------------------------
+
+box-sizing()
+	vendor('box-sizing', arguments, official webkit moz)
+
+//-------------------------------------------------------------------------
+
+transition()
+	vendor('transition', arguments, official webkit moz ms o)
+
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+
+hide-text()
+	text-indent: -9999px
+	white-space: nowrap
+	overflow:    hidden
+	font-size    0
+	color        transparent
+
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+
+extend(placeholder)
+	@extend ${placeholder}
+
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+//-------------------------------------------------------------------------
+
+reset-list()
+	&, li
+		list-style: none;
+		margin 0
+		padding 0
+
+//-------------------------------------------------------------------------
+
+clearfix(_type=both)
+	&:before
+	&:after
+		content "\0020"
+		display block
+		height 0
+		overflow hidden
+	&:after
+		clear _type
+	// for ie
+	zoom: 1
+
+//-------------------------------------------------------------------------
+
+/*
+ * Position utility.
+ *
+ * Synopsis:
+ *
+ *   -pos: <pos> [n] <pos> [n]
+ *
+ * Examples:
+ *
+ *     -pos: top left
+ *     -pos: top 5px left
+ *     -pos: top left 5px
+ *     -pos: top 5px left 5px
+ *
+ */
+
+-pos(type, args)
+	i = 0
+	position: unquote(type)
+	{args[i]}: args[i + 1] is a 'unit' ? args[i += 1] : 0
+	{args[i += 1]}: args[i + 1] is a 'unit' ? args[i += 1] : 0
+
+fixed()
+	-pos('fixed', arguments)
+
+absolute()
+	-pos('absolute', arguments)
+
+relative()
+	-pos('relative', arguments)
+
+//-------------------------------------------------------------------------
+
+size()
+	if (arguments[0])
+		width unit(arguments[0]) ? arguments[0] : unit(arguments[0], px)
+	if (arguments[1])
+		height unit(arguments[1]) ? arguments[1] : unit(arguments[1], px)
+

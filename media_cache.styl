@@ -1,0 +1,31 @@
+// Определяем объект кеша и объект с алиасами
+$media_cache = {}
+$media_aliases = {
+	palm:       '(max-width: 480px)'
+	lap:        '(min-width: 481px) and (max-width: 1023px)'
+	lap-and-up: '(min-width: 481px)'
+	portable:   '(max-width: 1023px)'
+	desk:       '(min-width: 1024px)'
+	desk-wide:  '(min-width: 1200px)'
+}
+
+// Миксин, кеширующий медиаквери
+media($condition)
+	helper($condition)
+		unless $media_cache[$condition]
+			$media_cache[$condition] = ()
+		push($media_cache[$condition], block)
+
+	+helper($condition)
+		{selector() + ''}
+			{block}
+
+// Функция, вызывающая закешированные медиаквери
+apply_media_cache()
+	for $media, $blocks in $media_cache
+		$media = unquote($media_aliases[$media] || $media)
+		$media = '(%s)' % $media unless match('\(', $media)
+		$media = 'only screen and %s' % $media
+		@media $media
+			for $block in $blocks
+				{$block}
